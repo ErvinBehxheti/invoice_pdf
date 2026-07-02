@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, View, Text, Image, Link, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/types";
 import { PDF_FONT_FAMILY, formatMoney, formatPdfDate } from "./shared";
 
@@ -194,7 +194,7 @@ export function CleanTemplate({ invoice }: { invoice: InvoiceData }) {
           </View>
         </View>
 
-        {invoice.notes || invoice.bankDetails ? (
+        {invoice.notes || invoice.bankDetails || invoice.paymentLinkUrl ? (
           <View style={styles.footer}>
             {invoice.notes ? (
               <>
@@ -205,7 +205,17 @@ export function CleanTemplate({ invoice }: { invoice: InvoiceData }) {
             {invoice.bankDetails ? (
               <>
                 <Text style={styles.footerLabel}>Payment Details</Text>
-                <Text style={styles.muted}>{invoice.bankDetails}</Text>
+                <Text style={[styles.muted, invoice.paymentLinkUrl ? { marginBottom: 12 } : {}]}>
+                  {invoice.bankDetails}
+                </Text>
+              </>
+            ) : null}
+            {invoice.paymentLinkUrl ? (
+              <>
+                <Text style={styles.footerLabel}>Pay Online</Text>
+                <Link src={invoice.paymentLinkUrl} style={{ color: "#2563eb" }}>
+                  {invoice.paymentLinkUrl}
+                </Link>
               </>
             ) : null}
           </View>

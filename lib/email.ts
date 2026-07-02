@@ -18,12 +18,15 @@ interface SendInvoiceEmailParams {
   invoiceId: string;
   invoiceNumber: string;
   fromName: string;
+  fromEmail: string | null;
   toName: string;
   toEmail: string;
   total: number;
   currency: string;
   dueDate: Date | null;
   viewToken: string;
+  paymentLinkUrl: string | null;
+  isPro: boolean;
   pdfBuffer: Buffer;
 }
 
@@ -35,6 +38,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams) {
   return getResend().emails.send({
     from: process.env.FROM_EMAIL ?? "InvoiceFlow <onboarding@resend.dev>",
     to: params.toEmail,
+    replyTo: params.fromEmail ?? undefined,
     subject: `Invoice ${params.invoiceNumber} from ${params.fromName}`,
     react: InvoiceEmail({
       fromName: params.fromName,
@@ -44,6 +48,8 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams) {
       dueDate: params.dueDate ? formatDate(params.dueDate) : "on receipt",
       viewUrl,
       trackingPixelUrl,
+      paymentUrl: params.paymentLinkUrl,
+      showPoweredBy: !params.isPro,
     }),
     attachments: [
       {

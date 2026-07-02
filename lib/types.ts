@@ -34,6 +34,7 @@ interface DbInvoiceLike {
   discountValue: number | null;
   notes: string | null;
   bankDetails: string | null;
+  paymentLinkUrl: string | null;
   logoUrl: string | null;
   templateId: string;
   brandColor: string | null;
@@ -76,6 +77,7 @@ export function dbInvoiceToFormState(invoice: DbInvoiceLike): InvoiceFormState {
 
     notes: invoice.notes ?? "",
     bankDetails: invoice.bankDetails ?? "",
+    paymentLinkUrl: invoice.paymentLinkUrl ?? "",
 
     logoUrl: invoice.logoUrl,
     templateId: invoice.templateId,
@@ -123,6 +125,7 @@ export interface InvoiceFormState {
 
   notes: string;
   bankDetails: string;
+  paymentLinkUrl: string;
 
   logoUrl: string | null;
   templateId: string;
@@ -142,7 +145,7 @@ export const FREE_TEMPLATES = ["clean", "professional"] as const;
 export const PRO_TEMPLATES = ["minimal", "bold", "modern"] as const;
 export const ALL_TEMPLATES = [...FREE_TEMPLATES, ...PRO_TEMPLATES] as const;
 
-export const CURRENCIES = ["EUR", "USD", "GBP", "CHF"] as const;
+export const CURRENCIES = ["EUR", "USD", "GBP", "CHF", "CAD", "AUD", "INR"] as const;
 
 export function resolveTemplateId(templateId: string, isPro: boolean): string {
   if (!isPro && (PRO_TEMPLATES as readonly string[]).includes(templateId)) {
@@ -193,6 +196,7 @@ export function createInitialInvoiceState(): InvoiceFormState {
 
     notes: "",
     bankDetails: "",
+    paymentLinkUrl: "",
 
     logoUrl: null,
     templateId: "clean",

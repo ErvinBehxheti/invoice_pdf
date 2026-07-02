@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, View, Text, Image, Link, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/types";
 import { PDF_FONT_FAMILY, formatMoney, formatPdfDate } from "./shared";
 
@@ -82,16 +82,28 @@ export function ModernTemplate({ invoice }: { invoice: InvoiceData }) {
           <Text style={styles.sidebarLabel}>Due date</Text>
           <Text style={styles.sidebarValue}>{formatPdfDate(invoice.dueDate)}</Text>
 
+          {invoice.paymentTerms ? (
+            <>
+              <Text style={styles.sidebarLabel}>Payment terms</Text>
+              <Text style={styles.sidebarValue}>{invoice.paymentTerms}</Text>
+            </>
+          ) : null}
+
           <Text style={styles.sidebarLabel}>From</Text>
           <Text style={styles.sidebarValue}>
             {invoice.fromName}
             {invoice.fromEmail ? `\n${invoice.fromEmail}` : ""}
+            {invoice.fromAddress ? `\n${invoice.fromAddress}` : ""}
+            {invoice.fromVatNumber ? `\nVAT: ${invoice.fromVatNumber}` : ""}
           </Text>
 
           <Text style={styles.sidebarLabel}>Bill to</Text>
           <Text style={styles.sidebarValue}>
             {invoice.toCompany || invoice.toName}
+            {invoice.toCompany ? `\n${invoice.toName}` : ""}
             {invoice.toEmail ? `\n${invoice.toEmail}` : ""}
+            {invoice.toAddress ? `\n${invoice.toAddress}` : ""}
+            {invoice.toVatNumber ? `\nVAT: ${invoice.toVatNumber}` : ""}
           </Text>
         </View>
 
@@ -140,7 +152,7 @@ export function ModernTemplate({ invoice }: { invoice: InvoiceData }) {
             </View>
           </View>
 
-          {invoice.notes || invoice.bankDetails ? (
+          {invoice.notes || invoice.bankDetails || invoice.paymentLinkUrl ? (
             <View style={styles.footer}>
               {invoice.notes ? (
                 <>
@@ -151,7 +163,17 @@ export function ModernTemplate({ invoice }: { invoice: InvoiceData }) {
               {invoice.bankDetails ? (
                 <>
                   <Text style={styles.footerLabel}>Payment details</Text>
-                  <Text style={styles.muted}>{invoice.bankDetails}</Text>
+                  <Text style={[styles.muted, invoice.paymentLinkUrl ? { marginBottom: 12 } : {}]}>
+                    {invoice.bankDetails}
+                  </Text>
+                </>
+              ) : null}
+              {invoice.paymentLinkUrl ? (
+                <>
+                  <Text style={styles.footerLabel}>Pay online</Text>
+                  <Link src={invoice.paymentLinkUrl} style={{ color: "#2563eb" }}>
+                    {invoice.paymentLinkUrl}
+                  </Link>
                 </>
               ) : null}
             </View>

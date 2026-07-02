@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, View, Text, Image, Link, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/types";
 import { PDF_FONT_FAMILY, formatMoney, formatPdfDate } from "./shared";
 
@@ -69,12 +69,18 @@ export function MinimalTemplate({ invoice }: { invoice: InvoiceData }) {
             <Text style={styles.partyName}>{invoice.fromName}</Text>
             {invoice.fromEmail ? <Text style={styles.muted}>{invoice.fromEmail}</Text> : null}
             {invoice.fromAddress ? <Text style={styles.muted}>{invoice.fromAddress}</Text> : null}
+            {invoice.fromVatNumber ? (
+              <Text style={styles.muted}>VAT: {invoice.fromVatNumber}</Text>
+            ) : null}
           </View>
           <View style={styles.partyBlock}>
             <Text style={styles.partyName}>{invoice.toCompany || invoice.toName}</Text>
             {invoice.toCompany ? <Text style={styles.muted}>{invoice.toName}</Text> : null}
             {invoice.toEmail ? <Text style={styles.muted}>{invoice.toEmail}</Text> : null}
             {invoice.toAddress ? <Text style={styles.muted}>{invoice.toAddress}</Text> : null}
+            {invoice.toVatNumber ? (
+              <Text style={styles.muted}>VAT: {invoice.toVatNumber}</Text>
+            ) : null}
           </View>
         </View>
 
@@ -137,7 +143,7 @@ export function MinimalTemplate({ invoice }: { invoice: InvoiceData }) {
           </View>
         </View>
 
-        {invoice.notes || invoice.bankDetails ? (
+        {invoice.notes || invoice.bankDetails || invoice.paymentLinkUrl ? (
           <View style={styles.footer}>
             {invoice.notes ? (
               <>
@@ -148,7 +154,17 @@ export function MinimalTemplate({ invoice }: { invoice: InvoiceData }) {
             {invoice.bankDetails ? (
               <>
                 <Text style={styles.footerLabel}>Payment details</Text>
-                <Text style={styles.muted}>{invoice.bankDetails}</Text>
+                <Text style={[styles.muted, invoice.paymentLinkUrl ? { marginBottom: 12 } : {}]}>
+                  {invoice.bankDetails}
+                </Text>
+              </>
+            ) : null}
+            {invoice.paymentLinkUrl ? (
+              <>
+                <Text style={styles.footerLabel}>Pay online</Text>
+                <Link src={invoice.paymentLinkUrl} style={{ color: "#2563eb" }}>
+                  {invoice.paymentLinkUrl}
+                </Link>
               </>
             ) : null}
           </View>

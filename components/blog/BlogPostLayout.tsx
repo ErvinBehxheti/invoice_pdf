@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils/format";
 import type { BlogPost } from "@/lib/content/blog";
+import { SiteFooter } from "@/components/marketing/SiteFooter";
 
 export function BlogPostLayout({
   post,
@@ -68,12 +69,7 @@ export function BlogPostLayout({
         </div>
       </article>
 
-      <footer className="border-t py-8 text-center text-xs text-muted-foreground">
-        <p>
-          © {new Date().getFullYear()} InvoiceFlow · Simple invoicing for
-          freelancers
-        </p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

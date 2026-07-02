@@ -20,6 +20,7 @@ interface SettingsFormProps {
     defaultTaxLabel: string | null;
     defaultTaxRate: number | null;
     defaultBankDetails: string | null;
+    defaultPaymentLinkUrl: string | null;
     brandColor: string | null;
   };
 }
@@ -32,6 +33,7 @@ export function SettingsForm({ isPro, initial }: SettingsFormProps) {
   const [taxLabel, setTaxLabel] = useState(initial.defaultTaxLabel ?? "");
   const [taxRate, setTaxRate] = useState(initial.defaultTaxRate ?? 0);
   const [bankDetails, setBankDetails] = useState(initial.defaultBankDetails ?? "");
+  const [paymentLinkUrl, setPaymentLinkUrl] = useState(initial.defaultPaymentLinkUrl ?? "");
   const [brandColor, setBrandColor] = useState(initial.brandColor ?? "#171717");
   const [saving, setSaving] = useState(false);
 
@@ -48,6 +50,7 @@ export function SettingsForm({ isPro, initial }: SettingsFormProps) {
           defaultTaxLabel: taxLabel,
           defaultTaxRate: taxRate,
           defaultBankDetails: bankDetails,
+          defaultPaymentLinkUrl: paymentLinkUrl,
           ...(isPro ? { brandColor } : {}),
         }),
       });
@@ -118,6 +121,18 @@ export function SettingsForm({ isPro, initial }: SettingsFormProps) {
             value={bankDetails}
             onChange={(e) => setBankDetails(e.target.value)}
           />
+        </div>
+        <div className="space-y-1.5 max-w-md">
+          <Label className="text-xs text-muted-foreground">Payment link</Label>
+          <Input
+            placeholder="https://buy.stripe.com/… or paypal.me/yourname"
+            value={paymentLinkUrl}
+            onChange={(e) => setPaymentLinkUrl(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Adds a &quot;Pay now&quot; button to your invoices. Paste a Stripe
+            Payment Link, PayPal.me, Wise, or any payment URL.
+          </p>
         </div>
       </section>
 

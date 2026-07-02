@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/lib/content/blog";
+import { templatePages } from "@/lib/content/template-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
@@ -20,16 +21,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/templates/freelancer-invoice-template`,
-      changeFrequency: "monthly",
+    ...templatePages.map((page) => ({
+      url: `${baseUrl}/templates/${page.slug}`,
+      changeFrequency: "monthly" as const,
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/templates/vat-invoice-template`,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
+    })),
     {
       url: `${baseUrl}/blog`,
       changeFrequency: "weekly",

@@ -23,6 +23,7 @@ export default async function SettingsPage() {
           defaultTaxLabel: user.defaultTaxLabel,
           defaultTaxRate: user.defaultTaxRate,
           defaultBankDetails: user.defaultBankDetails,
+          defaultPaymentLinkUrl: user.defaultPaymentLinkUrl,
           brandColor: user.brandColor,
         }}
       />

@@ -113,6 +113,7 @@ export function InvoiceBuilder({
             taxLabel: u.defaultTaxLabel ?? "VAT",
             taxRate: u.defaultTaxRate ?? 0,
             bankDetails: u.defaultBankDetails ?? "",
+            paymentLinkUrl: u.defaultPaymentLinkUrl ?? "",
             logoUrl: u.logoUrl ?? null,
             brandColor: u.brandColor ?? "#171717",
           },
@@ -408,6 +409,19 @@ export function InvoiceBuilder({
               onChange={(e) => setField("bankDetails", e.target.value)}
             />
           </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Payment link (optional)</Label>
+          <Input
+            placeholder="https://buy.stripe.com/… or paypal.me/yourname"
+            value={state.paymentLinkUrl}
+            onChange={(e) => setField("paymentLinkUrl", e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Clients get a &quot;Pay now&quot; button on the invoice page, the email,
+            and the PDF. Works with Stripe Payment Links, PayPal.me, Wise, and more.
+          </p>
         </div>
       </div>
 

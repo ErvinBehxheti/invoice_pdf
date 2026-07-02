@@ -8,26 +8,27 @@ datasource db {
 }
 
 model User {
-  id                   String    @id @default(cuid())
-  clerkId              String    @unique
-  email                String    @unique
-  name                 String?
-  stripeCustomerId     String?   @unique
-  stripeSubscriptionId String?
-  subscriptionStatus   String?
-  planTier             String    @default("free")
-  invoiceCount         Int       @default(0)
-  invoiceCountResetAt  DateTime  @default(now())
-  nextInvoiceNumber    Int       @default(1)
-  defaultCurrency      String    @default("EUR")
-  defaultPaymentTerms  String?
-  defaultBankDetails   String?
-  defaultTaxLabel      String?
-  defaultTaxRate       Float?
-  logoUrl              String?
-  brandColor           String?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id                    String   @id @default(cuid())
+  clerkId               String   @unique
+  email                 String   @unique
+  name                  String?
+  stripeCustomerId      String?  @unique
+  stripeSubscriptionId  String?
+  subscriptionStatus    String?
+  planTier              String   @default("free")
+  invoiceCount          Int      @default(0)
+  invoiceCountResetAt   DateTime @default(now())
+  nextInvoiceNumber     Int      @default(1)
+  defaultCurrency       String   @default("EUR")
+  defaultPaymentTerms   String?
+  defaultBankDetails    String?
+  defaultPaymentLinkUrl String?
+  defaultTaxLabel       String?
+  defaultTaxRate        Float?
+  logoUrl               String?
+  brandColor            String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   clients  Client[]
   invoices Invoice[]
@@ -90,11 +91,12 @@ model Invoice {
   discountAmount Float?
   total          Float   @default(0)
 
-  issueDate    DateTime  @default(now())
-  dueDate      DateTime?
-  paymentTerms String?
-  notes        String?
-  bankDetails  String?
+  issueDate      DateTime  @default(now())
+  dueDate        DateTime?
+  paymentTerms   String?
+  notes          String?
+  bankDetails    String?
+  paymentLinkUrl String?
 
   logoUrl    String?
   brandColor String?

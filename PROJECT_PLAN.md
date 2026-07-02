@@ -159,6 +159,7 @@ model User {
   defaultCurrency      String    @default("EUR")
   defaultPaymentTerms  String?
   defaultBankDetails   String?
+  defaultPaymentLinkUrl String?   // Phase 10: pre-fills "Pay now" link on new invoices
   defaultTaxLabel      String?
   defaultTaxRate       Float?
   logoUrl              String?
@@ -228,6 +229,7 @@ model Invoice {
   paymentTerms String?
   notes        String?
   bankDetails  String?
+  paymentLinkUrl String?  // Phase 10: "Pay now" URL (Stripe Payment Link, PayPal.me, ...)
 
   logoUrl    String?
   brandColor String?
@@ -326,8 +328,7 @@ invoice_pdf/
 │   │   │   ├── page.tsx                    # Index, sorted newest-first
 │   │   │   └── [slug]/page.tsx             # generateStaticParams — all posts pre-rendered, Article JSON-LD
 │   │   └── templates/
-│   │       ├── freelancer-invoice-template/page.tsx
-│   │       └── vat-invoice-template/page.tsx
+│   │       └── [slug]/page.tsx              # Phase 10: data-driven (lib/content/template-pages.ts), 8 pages pre-rendered
 │   │
 │   └── api/
 │       ├── webhooks/stripe/route.ts        # All 4 lifecycle events
@@ -631,6 +632,23 @@ All 8 prior phases were feature-complete but only ever verified manually (throwa
 **One real, previously-undocumented behavior surfaced while writing tests, not changed:** monthly recurring invoices starting from the 29th/30th/31st drift in send-day on short months — e.g. starting Jan 31, the next sends land on Mar 3, Apr 3, May 3, not the 31st/28th/last-day. This is JS `Date#setMonth`'s documented overflow behavior, not a bug introduced anywhere in Phases 1-9, but it had never been explicitly called out before. Locked in by a test as current behavior rather than silently fixed, since changing it (e.g. clamping to the target month's last day) is a deliberate product decision, not something to slip in while adding test coverage.
 
 **Deliberately deferred (Tier 3, scoped out in the approved plan):** full E2E test coverage (needs a stable deployed target — real Clerk/Stripe keys, a real URL — to be worth the investment), and minor over-fetching (e.g. the recurring cron pulls the full `User` relation when it only reads `planTier`; no query anywhere uses Prisma `select` yet) — both real but low-impact at current scale, revisit post-deployment.
+
+### Phase 10 — Conversion & Monetization Pass ✅ COMPLETE
+
+Driven by a full product audit (design 5.5/10 was the weakest score; no payment collection was the #1 feature gap vs every paid competitor). Everything verified live: lint/typecheck/21 tests/build all green, all 5 PDF templates re-rendered and visually inspected, landing + template pages screenshotted via Playwright with zero console errors.
+
+1. **Brand color** — replaced the all-grayscale palette with blue-600 `#2563eb` (`--primary`, `--ring`, `--accent`, sidebar + chart tokens, light and dark). Neutrals stay gray; everything interactive carries the hue.
+2. **Hero invoice mockup** — `components/marketing/InvoiceHeroMockup.tsx`, a pure-CSS rendition of the Professional template (zero image bytes, always matches brand color) with floating "Viewed 2×" and "Paid" badges. Hero is now two-column; added an honest product-facts strip (60 sec / 5 templates / €0) instead of fabricated social proof.
+3. **Copy fixes** — Pro CTA "Start free trial" (a lie) → "Get Pro — €2/month"; "less than a coffee" price anchor; Pro pricing card gets brand-color border + tint; Zoho/Wave objection FAQ + payment-link FAQ added to `pricingFaqs`; pro features list now surfaces recurring, CSV export, white-label sending, and payment links.
+4. **"Pay now" payment links** (the missing get-paid feature, BYO-link flavor — no Stripe Connect needed): `Invoice.paymentLinkUrl` + `User.defaultPaymentLinkUrl` (migration `20260702120000_add_payment_link_url`), builder field, settings default with prefill, "Pay {total}" button on `/i/[token]` (hidden once paid), "Pay now" button in the email, clickable "Pay online" link in all 5 PDF templates. Free-tier users get it too (it's just a URL); the distribution surfaces (email, hosted page) are Pro anyway.
+5. **PDF compliance fixes** — VAT numbers added to Minimal + Bold (both parties); Modern gained full addresses, both VAT numbers, and payment terms (was the least compliant template).
+6. **White-label Pro email** — footer is now "Questions about this invoice? Reply to this email to reach {fromName}." for Pro (free keeps "Sent via InvoiceFlow…"), and `replyTo` is set to the freelancer's email so that sentence is actually true.
+7. **Server-side Pro gate on `/api/invoices/[id]/send`** — email sending was marketed as Pro since Phase 5 but never enforced; free users could send via the API and UI. Now 403s with an upgrade message.
+8. **SEO** — Article JSON-LD gained author/publisher/image/url/mainEntityOfPage (E-E-A-T); blog index title now keyword-bearing; template landing pages rewritten as data-driven `/templates/[slug]` (mirrors the blog pattern) with 6 new profession pages (photographer, web designer, consultant, copywriter, developer, contractor), each with unique content sections + FAQPage JSON-LD; sitemap driven from the same data; real multi-column `SiteFooter` replaced the one-line footer on every marketing page.
+9. **Currencies** — added CAD, AUD, INR (now 7 total).
+10. **Robustness** — `LOAD_DRAFT` now merges over fresh defaults so pre-Phase-10 localStorage drafts don't hydrate `paymentLinkUrl` as undefined; `invoiceFormSchema.paymentLinkUrl` has `.default("")` so stale clients still parse.
+
+**Not done (needs deployment/accounts, unchanged from §14):** native Stripe payment collection (Connect), annual billing price in Stripe, directory submissions. The migration must be applied with `prisma migrate deploy` once a real `DATABASE_URL` is available — it was hand-written (two nullable `TEXT` columns) because this session had no DB access.
 
 ---
 

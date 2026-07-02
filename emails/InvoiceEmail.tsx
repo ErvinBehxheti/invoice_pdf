@@ -19,7 +19,12 @@ interface InvoiceEmailProps {
   dueDate: string;
   viewUrl: string;
   trackingPixelUrl: string;
+  paymentUrl?: string | null;
+  // Pro users get white-label sending — no InvoiceFlow branding in the footer.
+  showPoweredBy: boolean;
 }
+
+const BRAND_BLUE = "#2563eb";
 
 export function InvoiceEmail({
   fromName,
@@ -29,6 +34,8 @@ export function InvoiceEmail({
   dueDate,
   viewUrl,
   trackingPixelUrl,
+  paymentUrl,
+  showPoweredBy,
 }: InvoiceEmailProps) {
   return (
     <Html>
@@ -54,26 +61,52 @@ export function InvoiceEmail({
           </Text>
 
           <Section style={{ textAlign: "center", margin: "32px 0" }}>
-            <Button
-              href={viewUrl}
-              style={{
-                backgroundColor: "#171717",
-                color: "#ffffff",
-                padding: "12px 24px",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              View Invoice
-            </Button>
+            {paymentUrl ? (
+              <>
+                <Button
+                  href={paymentUrl}
+                  style={{
+                    backgroundColor: BRAND_BLUE,
+                    color: "#ffffff",
+                    padding: "12px 24px",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  Pay {total} now
+                </Button>
+                <Text style={{ fontSize: "13px", margin: "16px 0 0" }}>
+                  <a href={viewUrl} style={{ color: "#525252", textDecoration: "underline" }}>
+                    View invoice online
+                  </a>
+                </Text>
+              </>
+            ) : (
+              <Button
+                href={viewUrl}
+                style={{
+                  backgroundColor: BRAND_BLUE,
+                  color: "#ffffff",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                View Invoice
+              </Button>
+            )}
           </Section>
 
           <Hr style={{ borderColor: "#e5e5e5", margin: "24px 0" }} />
 
           <Text style={{ fontSize: "12px", color: "#a3a3a3" }}>
-            Sent via InvoiceFlow on behalf of {fromName}.
+            {showPoweredBy
+              ? `Sent via InvoiceFlow on behalf of ${fromName}.`
+              : `Questions about this invoice? Reply to this email to reach ${fromName}.`}
           </Text>
         </Container>
         <Img src={trackingPixelUrl} width={1} height={1} alt="" style={{ display: "none" }} />

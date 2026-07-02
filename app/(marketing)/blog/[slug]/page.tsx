@@ -44,12 +44,30 @@ export default async function BlogPostPage({
 
   if (!post || !Content) notFound();
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const postUrl = `${appUrl}/blog/${post.slug}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.description,
     datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    url: postUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": postUrl },
+    image: `${appUrl}/opengraph-image`,
+    author: {
+      "@type": "Organization",
+      name: "InvoiceFlow",
+      url: appUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "InvoiceFlow",
+      url: appUrl,
+      logo: { "@type": "ImageObject", url: `${appUrl}/opengraph-image` },
+    },
   };
 
   return (

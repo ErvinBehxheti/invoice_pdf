@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Download, FileText } from "lucide-react";
+import { CreditCard, Download, FileText } from "lucide-react";
 import { db } from "@/lib/db";
 import { markViewedByToken } from "@/lib/track";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
@@ -21,6 +21,8 @@ export default async function PublicInvoicePage({
 
   await markViewedByToken(token);
 
+  const canPayOnline = !!invoice.paymentLinkUrl && invoice.status !== "paid";
+
   return (
     <div className="min-h-screen bg-muted/30 py-10 px-4">
       <div className="max-w-2xl mx-auto">
@@ -31,13 +33,30 @@ export default async function PublicInvoicePage({
             </div>
             InvoiceFlow
           </div>
-          <a
-            href={`/api/invoices/${invoice.id}/pdf?token=${token}`}
-            className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Download PDF
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href={`/api/invoices/${invoice.id}/pdf?token=${token}`}
+              className={
+                canPayOnline
+                  ? "inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md border bg-card hover:bg-muted transition-colors"
+                  : "inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              }
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download PDF
+            </a>
+            {canPayOnline && (
+              <a
+                href={invoice.paymentLinkUrl!}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                <CreditCard className="w-3.5 h-3.5" />
+                Pay {formatCurrency(invoice.total, invoice.currency)}
+              </a>
+            )}
+          </div>
         </div>
 
         <div className="rounded-xl border bg-card p-8">

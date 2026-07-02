@@ -3,9 +3,10 @@ import { FileText } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { blogPosts } from "@/lib/content/blog";
 import { formatDate } from "@/lib/utils/format";
+import { SiteFooter } from "@/components/marketing/SiteFooter";
 
 export const metadata = {
-  title: "Blog — InvoiceFlow",
+  title: "Freelancer Invoicing Guides & Tips — InvoiceFlow Blog",
   description:
     "Practical invoicing guides for freelancers: writing professional invoices, VAT, chasing late payments, and more.",
   alternates: { canonical: "/blog" },
@@ -52,12 +53,7 @@ export default function BlogIndexPage() {
         </div>
       </section>
 
-      <footer className="border-t py-8 text-center text-xs text-muted-foreground">
-        <p>
-          © {new Date().getFullYear()} InvoiceFlow · Simple invoicing for
-          freelancers
-        </p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

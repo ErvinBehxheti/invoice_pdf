@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { freeFeatures, proFeatures, pricingFaqs } from "@/lib/content/pricing";
+import { SiteFooter } from "@/components/marketing/SiteFooter";
 
 export const metadata = {
   title: "Pricing — InvoiceFlow",
@@ -86,7 +87,7 @@ export default function PricingPage() {
               Get started
             </Link>
           </div>
-          <div className="rounded-xl border-2 border-primary bg-card p-6 relative">
+          <div className="rounded-xl border-2 border-primary bg-primary/[0.03] p-6 relative">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
                 Most popular
@@ -94,14 +95,16 @@ export default function PricingPage() {
             </div>
             <p className="font-semibold mb-1">Pro</p>
             <p className="text-3xl font-bold mb-1">€2</p>
-            <p className="text-sm text-muted-foreground mb-6">per month</p>
+            <p className="text-sm text-muted-foreground mb-6">
+              per month — less than a coffee
+            </p>
             <ul className="space-y-2 text-sm text-muted-foreground">
               {proFeatures.map((f) => (
                 <li key={f}>✓ {f}</li>
               ))}
             </ul>
             <Link href="/sign-up" className={cn(buttonVariants(), "w-full mt-6")}>
-              Start free trial
+              Get Pro — €2/month
             </Link>
           </div>
         </div>
@@ -121,12 +124,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <footer className="border-t py-8 text-center text-xs text-muted-foreground">
-        <p>
-          © {new Date().getFullYear()} InvoiceFlow · Simple invoicing for
-          freelancers
-        </p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

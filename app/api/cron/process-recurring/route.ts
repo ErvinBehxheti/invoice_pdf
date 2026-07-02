@@ -50,12 +50,16 @@ export async function GET(req: NextRequest) {
           invoiceId: clone.id,
           invoiceNumber: clone.invoiceNumber,
           fromName: clone.fromName,
+          fromEmail: clone.fromEmail,
           toName: clone.toName,
           toEmail: clone.toEmail,
           total: clone.total,
           currency: clone.currency,
           dueDate: clone.dueDate,
           viewToken,
+          paymentLinkUrl: clone.paymentLinkUrl,
+          // Recurring invoices only process for Pro users (checked above).
+          isPro: true,
           pdfBuffer,
         });
         await db.invoice.update({

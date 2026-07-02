@@ -1,5 +1,5 @@
 import type { InvoiceFormState, LineItemInput } from "@/lib/types";
-import { createEmptyLineItem } from "@/lib/types";
+import { createEmptyLineItem, createInitialInvoiceState } from "@/lib/types";
 
 export type InvoiceAction =
   | { type: "SET_FIELD"; field: keyof InvoiceFormState; value: InvoiceFormState[keyof InvoiceFormState] }
@@ -36,7 +36,9 @@ export function invoiceReducer(
       };
 
     case "LOAD_DRAFT":
-      return action.state;
+      // Merge over fresh defaults so drafts persisted before a field was
+      // added (e.g. paymentLinkUrl) don't hydrate with undefined values.
+      return { ...createInitialInvoiceState(), ...action.state };
 
     case "APPLY_DEFAULTS":
       return { ...state, ...action.defaults };

@@ -81,6 +81,7 @@ export async function PATCH(
         paymentTerms: data.paymentTerms,
         notes: data.notes,
         bankDetails: data.bankDetails,
+        paymentLinkUrl: data.paymentLinkUrl || null,
         logoUrl: data.logoUrl,
         brandColor: data.brandColor,
         lineItems: {

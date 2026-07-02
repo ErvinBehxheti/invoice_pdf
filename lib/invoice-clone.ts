@@ -51,6 +51,7 @@ export async function cloneInvoice(
         paymentTerms: original.paymentTerms,
         notes: original.notes,
         bankDetails: original.bankDetails,
+        paymentLinkUrl: original.paymentLinkUrl,
         logoUrl: original.logoUrl,
         brandColor: original.brandColor,
         lineItems: {

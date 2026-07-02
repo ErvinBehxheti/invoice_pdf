@@ -36,6 +36,8 @@ export const invoiceFormSchema = z.object({
 
   notes: z.string().max(2000),
   bankDetails: z.string().max(1000),
+  // Defaulted so drafts saved before this field existed still parse.
+  paymentLinkUrl: z.string().max(2000).default(""),
 
   logoUrl: z.string().max(2000).nullable(),
   templateId: z.enum(ALL_TEMPLATES),
@@ -49,6 +51,7 @@ export const userSettingsSchema = z.object({
   defaultCurrency: z.string().length(3).optional(),
   defaultPaymentTerms: z.string().max(200).nullable().optional(),
   defaultBankDetails: z.string().max(1000).nullable().optional(),
+  defaultPaymentLinkUrl: z.string().max(2000).nullable().optional(),
   defaultTaxLabel: z.string().max(50).nullable().optional(),
   defaultTaxRate: z.number().min(0).max(100).nullable().optional(),
   brandColor: z.string().max(20).nullable().optional(),
