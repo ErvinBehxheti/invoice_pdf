@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String    @id @default(cuid())
+  clerkId              String    @unique
+  email                String    @unique
+  name                 String?
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?
+  subscriptionStatus   String?
+  planTier             String    @default("free")
+  invoiceCount         Int       @default(0)
+  invoiceCountResetAt  DateTime  @default(now())
+  nextInvoiceNumber    Int       @default(1)
+  defaultCurrency      String    @default("EUR")
+  defaultPaymentTerms  String?
+  defaultBankDetails   String?
+  defaultTaxLabel      String?
+  defaultTaxRate       Float?
+  logoUrl              String?
+  brandColor           String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  clients  Client[]
+  invoices Invoice[]
+}
+
+model StripeEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  email        String?
+  company      String?
+  address      String?
+  vatNumber    String?
+  currency     String   @default("EUR")
+  defaultTerms String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  invoices Invoice[]
+
+  @@index([userId])
+}
+
+model Invoice {
+  id       String  @id @default(cuid())
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  invoiceNumber String
+  status        String @default("draft")
+  templateId    String @default("clean")
+
+  fromName      String
+  fromEmail     String?
+  fromAddress   String?
+  fromVatNumber String?
+
+  toName      String
+  toEmail     String?
+  toCompany   String?
+  toAddress   String?
+  toVatNumber String?
+
+  currency       String  @default("EUR")
+  subtotal       Float   @default(0)
+  taxRate        Float?
+  taxLabel       String?
+  taxAmount      Float?
+  discountType   String?
+  discountValue  Float?
+  discountAmount Float?
+  total          Float   @default(0)
+
+  issueDate    DateTime  @default(now())
+  dueDate      DateTime?
+  paymentTerms String?
+  notes        String?
+  bankDetails  String?
+
+  logoUrl    String?
+  brandColor String?
+
+  sentAt    DateTime?
+  viewedAt  DateTime?
+  viewCount Int       @default(0)
+  viewToken String?   @unique
+  paidAt    DateTime?
+
+  isRecurring      Boolean   @default(false)
+  recurringCadence String?
+  nextSendAt       DateTime?
+  parentInvoiceId  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lineItems LineItem[]
+
+  @@index([userId])
+  @@index([viewToken])
+  @@index([status])
+  @@index([clientId])
+}
+
+model LineItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float    @default(1)
+  rate        Float    @default(0)
+  amount      Float    @default(0)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([invoiceId])
+}
