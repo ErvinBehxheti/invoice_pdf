@@ -1,5 +1,5 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Notes for AI coding agents
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+This repo runs Next.js 16, which is newer than most training data and has real breaking changes (route conventions, middleware → `proxy.ts`, etc.). Before generating Next.js-specific code, check `node_modules/next/dist/docs/` for the current APIs rather than assuming an older version's conventions, and follow any deprecation notices you find there.
+
+See [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) for the stack, schema, and file layout, and [`docs/DEVELOPMENT_LOG.md`](./docs/DEVELOPMENT_LOG.md) for the gotchas already found during development (Prisma v7 import paths, Base UI vs. Radix, Clerk keyless-mode quirks, etc.) — worth reading before re-discovering them.

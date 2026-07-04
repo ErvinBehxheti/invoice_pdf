@@ -1,2 +1,4 @@
 @AGENTS.md
-@PROJECT_PLAN.md
+@docs/PRODUCT_PLAN.md
+@docs/ARCHITECTURE.md
+@docs/DEVELOPMENT_LOG.md
