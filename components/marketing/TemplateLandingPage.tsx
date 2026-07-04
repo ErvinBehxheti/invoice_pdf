@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { FileText, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SiteNav } from "@/components/marketing/SiteNav";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
 import type { TemplatePageFaq, TemplatePageSection } from "@/lib/content/template-pages";
 
@@ -48,22 +49,10 @@ export function TemplateLandingPage({
         />
       )}
 
-      <nav className="border-b bg-background/95 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
-              <FileText className="w-3.5 h-3.5 text-primary-foreground" />
-            </div>
-            InvoiceFlow
-          </Link>
-          <Link href="/invoices/new" className={buttonVariants({ size: "sm" })}>
-            Try for free
-          </Link>
-        </div>
-      </nav>
+      <SiteNav />
 
       <section className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-4xl font-bold tracking-tight mb-4 leading-tight">
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tighter mb-4 leading-[1.05]">
           {title}
         </h1>
         <p className="text-lg text-muted-foreground mb-8">{intro}</p>
@@ -79,7 +68,7 @@ export function TemplateLandingPage({
       </section>
 
       <section className="max-w-2xl mx-auto px-4 pb-16">
-        <div className="rounded-xl border bg-card p-6">
+        <div className="rounded-xl border border-border p-6">
           <h2 className="text-sm font-semibold mb-4">What&apos;s included</h2>
           <ul className="space-y-2.5">
             {features.map((feature) => (
@@ -96,7 +85,7 @@ export function TemplateLandingPage({
         <section className="max-w-2xl mx-auto px-4 pb-16 space-y-10">
           {sections.map((section) => (
             <div key={section.heading}>
-              <h2 className="text-xl font-semibold mb-3">{section.heading}</h2>
+              <h2 className="text-xl font-extrabold tracking-tight mb-3">{section.heading}</h2>
               <div className="space-y-4">
                 {section.paragraphs.map((paragraph, i) => (
                   <p key={i} className="text-[15px] leading-7 text-muted-foreground">
@@ -111,10 +100,10 @@ export function TemplateLandingPage({
 
       {faqs && faqs.length > 0 && (
         <section className="max-w-2xl mx-auto px-4 pb-16">
-          <h2 className="text-xl font-semibold mb-6">Frequently asked questions</h2>
-          <div className="space-y-6">
+          <h2 className="text-xl font-extrabold tracking-tight mb-6">Frequently asked questions</h2>
+          <div className="divide-y divide-dashed divide-border border-t border-dashed border-border">
             {faqs.map((faq) => (
-              <div key={faq.question}>
+              <div key={faq.question} className="py-5 first:pt-0">
                 <h3 className="text-sm font-semibold mb-1.5">{faq.question}</h3>
                 <p className="text-sm text-muted-foreground leading-6">{faq.answer}</p>
               </div>
@@ -124,7 +113,7 @@ export function TemplateLandingPage({
       )}
 
       <section className="max-w-2xl mx-auto px-4 pb-20 text-center">
-        <div className="rounded-xl border bg-card p-6">
+        <div className="rounded-xl border border-border p-6">
           <p className="font-semibold mb-1">Ready to invoice?</p>
           <p className="text-sm text-muted-foreground mb-4">
             Fill in this template and download your PDF in under a minute.

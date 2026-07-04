@@ -1,5 +1,5 @@
 import type { InvoiceTotals } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils/format";
+import { Amount } from "@/components/shared/Amount";
 
 interface InvoiceSummaryProps extends InvoiceTotals {
   currency: string;
@@ -21,12 +21,12 @@ export function InvoiceSummary({
       <div className="w-64 space-y-1.5">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Subtotal</span>
-          <span>{formatCurrency(subtotal, currency)}</span>
+          <Amount value={subtotal} currency={currency} />
         </div>
         {discountAmount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Discount</span>
-            <span>-{formatCurrency(discountAmount, currency)}</span>
+            <Amount value={-discountAmount} currency={currency} />
           </div>
         )}
         {taxAmount > 0 && (
@@ -34,12 +34,12 @@ export function InvoiceSummary({
             <span className="text-muted-foreground">
               {taxLabel} ({taxRate}%)
             </span>
-            <span>{formatCurrency(taxAmount, currency)}</span>
+            <Amount value={taxAmount} currency={currency} />
           </div>
         )}
-        <div className="flex justify-between text-base font-semibold pt-2 border-t">
+        <div className="flex justify-between text-base font-semibold pt-2 border-t border-border">
           <span>Total</span>
-          <span>{formatCurrency(total, currency)}</span>
+          <Amount value={total} currency={currency} />
         </div>
       </div>
     </div>

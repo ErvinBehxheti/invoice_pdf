@@ -8,7 +8,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-1">Settings</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight mb-1">Settings</h1>
       <p className="text-sm text-muted-foreground mb-8">
         Manage your profile, invoice defaults, and branding.
       </p>

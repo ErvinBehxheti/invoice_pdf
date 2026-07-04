@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Eye, MoreVertical, CheckCircle2, AlertCircle, Trash2, Copy } from "lucide-react";
 import { InvoiceStatusBadge } from "@/components/invoice/InvoiceStatusBadge";
-import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils/format";
+import { formatDate, formatRelativeTime } from "@/lib/utils/format";
+import { Amount } from "@/components/shared/Amount";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -71,7 +72,7 @@ export function InvoiceListRow({ invoice }: { invoice: InvoiceRow }) {
   }
 
   return (
-    <div className="flex items-center gap-2 border-b last:border-0">
+    <div className="flex items-center gap-2 border-b border-dashed border-border last:border-0">
       <Link
         href={`/invoices/${invoice.id}`}
         className="flex-1 flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-muted/50 transition-colors min-w-0"
@@ -108,9 +109,11 @@ export function InvoiceListRow({ invoice }: { invoice: InvoiceRow }) {
           <span className="text-muted-foreground text-xs">
             {formatDate(invoice.issueDate)}
           </span>
-          <span className="font-medium w-24 text-right">
-            {formatCurrency(invoice.total, invoice.currency)}
-          </span>
+          <Amount
+            value={invoice.total}
+            currency={invoice.currency}
+            className="font-medium w-24 text-right inline-block"
+          />
         </div>
       </Link>
 

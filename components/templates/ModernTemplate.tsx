@@ -1,6 +1,6 @@
 import { Document, Page, View, Text, Image, Link, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/types";
-import { PDF_FONT_FAMILY, formatMoney, formatPdfDate } from "./shared";
+import { PDF_FONT_FAMILY, formatMoney, formatPdfDate, WatermarkFooter } from "./shared";
 
 const styles = StyleSheet.create({
   page: { flexDirection: "row", fontFamily: PDF_FONT_FAMILY, fontSize: 9.5 },
@@ -60,7 +60,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export function ModernTemplate({ invoice }: { invoice: InvoiceData }) {
+export function ModernTemplate({
+  invoice,
+  watermark,
+}: {
+  invoice: InvoiceData;
+  watermark?: boolean;
+}) {
   const brand = invoice.brandColor || "#171717";
 
   return (
@@ -178,6 +184,7 @@ export function ModernTemplate({ invoice }: { invoice: InvoiceData }) {
               ) : null}
             </View>
           ) : null}
+          {watermark ? <WatermarkFooter /> : null}
         </View>
       </Page>
     </Document>

@@ -1,6 +1,6 @@
 import { Document, Page, View, Text, Image, Link, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/types";
-import { PDF_FONT_FAMILY, formatMoney, formatPdfDate } from "./shared";
+import { PDF_FONT_FAMILY, formatMoney, formatPdfDate, WatermarkFooter } from "./shared";
 
 const styles = StyleSheet.create({
   page: {
@@ -94,7 +94,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export function CleanTemplate({ invoice }: { invoice: InvoiceData }) {
+export function CleanTemplate({
+  invoice,
+  watermark,
+}: {
+  invoice: InvoiceData;
+  watermark?: boolean;
+}) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -220,6 +226,7 @@ export function CleanTemplate({ invoice }: { invoice: InvoiceData }) {
             ) : null}
           </View>
         ) : null}
+        {watermark ? <WatermarkFooter /> : null}
       </Page>
     </Document>
   );

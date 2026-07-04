@@ -5,7 +5,7 @@ import type { LineItemInput } from "@/lib/types";
 import type { InvoiceAction } from "@/lib/invoice-reducer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils/format";
+import { Amount } from "@/components/shared/Amount";
 
 interface LineItemsTableProps {
   lineItems: LineItemInput[];
@@ -71,9 +71,11 @@ export function LineItemsTable({ lineItems, currency, dispatch }: LineItemsTable
               })
             }
           />
-          <span className="text-right text-sm font-medium pr-2">
-            {formatCurrency(item.quantity * item.rate, currency)}
-          </span>
+          <Amount
+            value={item.quantity * item.rate}
+            currency={currency}
+            className="text-right text-sm font-medium pr-2"
+          />
           <button
             type="button"
             onClick={() => dispatch({ type: "REMOVE_LINE_ITEM", id: item.id })}

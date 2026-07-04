@@ -2,8 +2,11 @@ import { notFound } from "next/navigation";
 import { CreditCard, Download, FileText } from "lucide-react";
 import { db } from "@/lib/db";
 import { markViewedByToken } from "@/lib/track";
-import { formatCurrency, formatDate } from "@/lib/utils/format";
+import { formatDate } from "@/lib/utils/format";
 import { InvoiceStatusBadge } from "@/components/invoice/InvoiceStatusBadge";
+import { Amount } from "@/components/shared/Amount";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default async function PublicInvoicePage({
   params,
@@ -27,8 +30,8 @@ export default async function PublicInvoicePage({
     <div className="min-h-screen bg-muted/30 py-10 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 font-semibold text-sm">
-            <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
+          <div className="flex items-center gap-2 font-extrabold text-sm tracking-tight">
+            <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center">
               <FileText className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             InvoiceFlow
@@ -36,11 +39,10 @@ export default async function PublicInvoicePage({
           <div className="flex items-center gap-2">
             <a
               href={`/api/invoices/${invoice.id}/pdf?token=${token}`}
-              className={
-                canPayOnline
-                  ? "inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md border bg-card hover:bg-muted transition-colors"
-                  : "inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              }
+              className={cn(
+                buttonVariants({ variant: canPayOnline ? "outline" : "default", size: "sm" }),
+                "gap-1.5"
+              )}
             >
               <Download className="w-3.5 h-3.5" />
               Download PDF
@@ -50,19 +52,19 @@ export default async function PublicInvoicePage({
                 href={invoice.paymentLinkUrl!}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                className={cn(buttonVariants({ size: "sm" }), "gap-1.5")}
               >
                 <CreditCard className="w-3.5 h-3.5" />
-                Pay {formatCurrency(invoice.total, invoice.currency)}
+                Pay <Amount value={invoice.total} currency={invoice.currency} />
               </a>
             )}
           </div>
         </div>
 
-        <div className="rounded-xl border bg-card p-8">
+        <div className="rounded-xl border border-border p-8">
           <div className="flex items-start justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-semibold">{invoice.invoiceNumber}</h1>
+              <h1 className="text-2xl font-extrabold tracking-tight">{invoice.invoiceNumber}</h1>
               <div className="mt-2">
                 <InvoiceStatusBadge status={invoice.status} />
               </div>
@@ -100,7 +102,7 @@ export default async function PublicInvoicePage({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-8 pb-6 border-b text-sm">
+          <div className="grid grid-cols-3 gap-4 mb-8 pb-6 border-b border-dashed border-border text-sm">
             <div>
               <p className="text-xs text-muted-foreground mb-1">Issue date</p>
               <p>{formatDate(invoice.issueDate)}</p>
@@ -117,7 +119,7 @@ export default async function PublicInvoicePage({
 
           <table className="w-full text-sm mb-6">
             <thead>
-              <tr className="text-left text-xs text-muted-foreground border-b">
+              <tr className="text-left text-xs text-muted-foreground border-b border-dashed border-border">
                 <th className="pb-2 font-medium">Description</th>
                 <th className="pb-2 font-medium text-right">Qty</th>
                 <th className="pb-2 font-medium text-right">Rate</th>
@@ -126,14 +128,14 @@ export default async function PublicInvoicePage({
             </thead>
             <tbody>
               {invoice.lineItems.map((item) => (
-                <tr key={item.id} className="border-b border-muted">
+                <tr key={item.id} className="border-b border-dashed border-border">
                   <td className="py-2">{item.description}</td>
                   <td className="py-2 text-right">{item.quantity}</td>
                   <td className="py-2 text-right">
-                    {formatCurrency(item.rate, invoice.currency)}
+                    <Amount value={item.rate} currency={invoice.currency} />
                   </td>
                   <td className="py-2 text-right">
-                    {formatCurrency(item.quantity * item.rate, invoice.currency)}
+                    <Amount value={item.quantity * item.rate} currency={invoice.currency} />
                   </td>
                 </tr>
               ))}
@@ -144,12 +146,12 @@ export default async function PublicInvoicePage({
             <div className="w-56 space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>{formatCurrency(invoice.subtotal, invoice.currency)}</span>
+                <Amount value={invoice.subtotal} currency={invoice.currency} />
               </div>
               {!!invoice.discountAmount && invoice.discountAmount > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Discount</span>
-                  <span>-{formatCurrency(invoice.discountAmount, invoice.currency)}</span>
+                  <Amount value={-invoice.discountAmount} currency={invoice.currency} />
                 </div>
               )}
               {!!invoice.taxAmount && invoice.taxAmount > 0 && (
@@ -157,18 +159,18 @@ export default async function PublicInvoicePage({
                   <span className="text-muted-foreground">
                     {invoice.taxLabel} ({invoice.taxRate}%)
                   </span>
-                  <span>{formatCurrency(invoice.taxAmount, invoice.currency)}</span>
+                  <Amount value={invoice.taxAmount} currency={invoice.currency} />
                 </div>
               )}
-              <div className="flex justify-between text-base font-semibold pt-2 border-t">
+              <div className="flex justify-between text-base font-semibold pt-2 border-t border-border">
                 <span>Total</span>
-                <span>{formatCurrency(invoice.total, invoice.currency)}</span>
+                <Amount value={invoice.total} currency={invoice.currency} />
               </div>
             </div>
           </div>
 
           {(invoice.notes || invoice.bankDetails) && (
-            <div className="border-t pt-6 grid grid-cols-2 gap-8 text-sm">
+            <div className="border-t border-dashed border-border pt-6 grid grid-cols-2 gap-8 text-sm">
               {invoice.notes && (
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">

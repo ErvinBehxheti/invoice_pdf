@@ -12,7 +12,7 @@ interface ClientCardProps {
 
 export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
   return (
-    <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3">
+    <div className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
       <div className="min-w-0">
         <p className="text-sm font-medium truncate">{client.company || client.name}</p>
         {client.company && (

@@ -7,7 +7,10 @@ import { MinimalTemplate } from "@/components/templates/MinimalTemplate";
 import { BoldTemplate } from "@/components/templates/BoldTemplate";
 import { ModernTemplate } from "@/components/templates/ModernTemplate";
 
-const templateMap: Record<string, (props: { invoice: InvoiceData }) => ReactElement> = {
+const templateMap: Record<
+  string,
+  (props: { invoice: InvoiceData; watermark?: boolean }) => ReactElement
+> = {
   clean: CleanTemplate,
   professional: ProfessionalTemplate,
   minimal: MinimalTemplate,
@@ -15,8 +18,14 @@ const templateMap: Record<string, (props: { invoice: InvoiceData }) => ReactElem
   modern: ModernTemplate,
 };
 
-export async function generateInvoicePDF(invoice: InvoiceData): Promise<Buffer> {
+export async function generateInvoicePDF(
+  invoice: InvoiceData,
+  options?: { watermark?: boolean }
+): Promise<Buffer> {
   const Template = templateMap[invoice.templateId] ?? CleanTemplate;
-  const document = createElement(Template, { invoice }) as ReactElement<DocumentProps>;
+  const document = createElement(Template, {
+    invoice,
+    watermark: options?.watermark,
+  }) as ReactElement<DocumentProps>;
   return renderToBuffer(document);
 }

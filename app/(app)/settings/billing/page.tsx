@@ -11,12 +11,12 @@ export default async function BillingPage() {
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-1">Billing</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight mb-1">Billing</h1>
       <p className="text-sm text-muted-foreground mb-8">
         Manage your plan and subscription.
       </p>
 
-      <div className="rounded-xl border bg-card p-6">
+      <div className="rounded-xl border border-border p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs text-muted-foreground mb-1">Current plan</p>

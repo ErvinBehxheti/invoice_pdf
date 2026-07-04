@@ -42,7 +42,7 @@ export default async function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold">Invoices</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight">Invoices</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             Manage your invoices and track payments
           </p>
@@ -79,7 +79,7 @@ export default async function DashboardPage() {
       {invoices.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="rounded-xl border bg-card">
+        <div className="rounded-xl border border-border">
           {invoices.map((invoice: Invoice) => (
             <InvoiceListRow key={invoice.id} invoice={invoice} />
           ))}

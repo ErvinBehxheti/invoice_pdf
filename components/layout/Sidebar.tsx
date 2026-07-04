@@ -34,7 +34,7 @@ export function Sidebar() {
         <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
           <FileText className="w-4 h-4 text-primary-foreground" />
         </div>
-        <span className="font-semibold text-base tracking-tight">
+        <span className="font-extrabold text-base tracking-tight">
           InvoiceFlow
         </span>
       </Link>
@@ -71,7 +71,7 @@ export function Sidebar() {
 
       {/* Upgrade CTA */}
       <div className="mt-auto pt-4 space-y-3">
-        <div className="rounded-lg border bg-muted/50 p-3">
+        <div className="rounded-lg border border-dashed border-primary/40 bg-muted/50 p-3">
           <p className="text-xs font-medium mb-1">Free plan</p>
           <p className="text-xs text-muted-foreground mb-3">
             3 invoices/month. Upgrade for unlimited.

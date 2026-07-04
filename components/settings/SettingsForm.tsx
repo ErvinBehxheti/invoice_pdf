@@ -65,7 +65,7 @@ export function SettingsForm({ isPro, initial }: SettingsFormProps) {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-xl border bg-card p-6 space-y-4">
+      <section className="rounded-xl border border-border p-6 space-y-4">
         <h2 className="text-sm font-semibold">Profile</h2>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Name</Label>
@@ -77,7 +77,7 @@ export function SettingsForm({ isPro, initial }: SettingsFormProps) {
         </div>
       </section>
 
-      <section className="rounded-xl border bg-card p-6 space-y-4">
+      <section className="rounded-xl border border-border p-6 space-y-4">
         <h2 className="text-sm font-semibold">Invoice defaults</h2>
         <p className="text-xs text-muted-foreground -mt-2">
           Pre-filled on every new invoice. You can still edit per invoice.
@@ -136,7 +136,7 @@ export function SettingsForm({ isPro, initial }: SettingsFormProps) {
         </div>
       </section>
 
-      <section className="rounded-xl border bg-card p-6 space-y-4">
+      <section className="rounded-xl border border-border p-6 space-y-4">
         <h2 className="text-sm font-semibold">Branding</h2>
         <PlanGate isPro={isPro} feature="Custom brand color">
           <div className="space-y-1.5 max-w-xs">

@@ -1,3 +1,5 @@
+import { Text } from "@react-pdf/renderer";
+
 // Uses Helvetica, a standard PDF base font built into @react-pdf/renderer.
 // This avoids any network dependency on font CDNs during PDF generation,
 // which matters for reliability in serverless cold starts.
@@ -18,4 +20,22 @@ export function formatPdfDate(dateStr: string | undefined | null): string {
     month: "short",
     day: "numeric",
   }).format(new Date(dateStr));
+}
+
+// Rendered on invoices downloaded by fully anonymous (signed-out) visitors
+// only — a soft signup nudge, never shown to authenticated users regardless
+// of plan tier. See app/api/invoices/draft/pdf/route.ts.
+export function WatermarkFooter() {
+  return (
+    <Text
+      style={{
+        marginTop: 10,
+        fontSize: 7,
+        color: "#a3a3a3",
+        textAlign: "center",
+      }}
+    >
+      Made with InvoiceFlow — create your own free invoice
+    </Text>
+  );
 }
