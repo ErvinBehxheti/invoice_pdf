@@ -395,7 +395,7 @@ CLERK_SECRET_KEY=sk_test_...                        # Live Clerk test keys
 STRIPE_SECRET_KEY=sk_test_...                       # Live Stripe test key
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...      # Live Stripe test key
 STRIPE_PRICE_ID_PRO_EUR=price_...                   # Live: a real €2/month recurring test-mode Price, checkout verified end-to-end
-STRIPE_WEBHOOK_SECRET=whsec_...                     # Still a placeholder — get it from `stripe listen` (local, needs interactive `stripe login`) or the dashboard webhook endpoint (prod)
+STRIPE_WEBHOOK_SECRET=whsec_...                     # Live: from `stripe listen --api-key ... --print-secret` (no interactive login needed once you have a secret key), full checkout-to-upgrade flow verified end-to-end
 
 RESEND_API_KEY=re_...                               # Live key, confirmed working end-to-end
 FROM_EMAIL=InvoiceFlow <hello@yourdomain.com>       # Optional, defaults to onboarding@resend.dev if unset
