@@ -419,7 +419,9 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 
 // Auth context only — auth.protect() is intentionally not used here.
 // Every page/route does its own explicit auth() / currentUser() check
-// instead (see DEVELOPMENT_LOG.md for why).
+// instead (see DEVELOPMENT_LOG.md for why — re-tested with real Clerk
+// dev keys during the portfolio pass, and it's still the right call,
+// just for a different reason than originally documented).
 export default clerkMiddleware();
 
 export const config = {
@@ -430,7 +432,7 @@ export const config = {
 };
 ```
 
-There is no `isPublicRoute` matcher / `auth.protect()` call. Auth is enforced per-route instead — more verbose, but avoids a crash under Clerk's keyless dev mode (see the development log) and arguably better practice for API routes anyway, since a JSON client shouldn't receive an HTML redirect.
+There is no `isPublicRoute` matcher / `auth.protect()` call. Auth is enforced per-route instead. This was originally worked around because `auth.protect()` crashed under Clerk's keyless dev mode; re-tested with real dev keys and confirmed that specific crash is gone, but `auth.protect()` still issues an HTML 307 redirect to `/sign-in` for unauthenticated requests to API routes — even with an explicit `Accept: application/json` header. That would break every client-side `fetch()` call in the app on session expiry (attempting to `JSON.parse()` an HTML sign-in page). Per-route checks stay for that reason.
 
 ---
 

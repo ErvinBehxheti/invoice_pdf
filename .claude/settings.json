@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node /tmp/claude-1001/-home-attributy-ervini-Desktop-invoice-pdf/91be9844-f422-461b-85a3-8fd0560b7a0e/scratchpad/verify.mjs)",
+      "Bash(node /tmp/claude-1001/-home-attributy-ervini-Desktop-invoice-pdf/91be9844-f422-461b-85a3-8fd0560b7a0e/scratchpad/verify2.mjs)",
+      "Bash(node /tmp/claude-1001/-home-attributy-ervini-Desktop-invoice-pdf/91be9844-f422-461b-85a3-8fd0560b7a0e/scratchpad/verify3.mjs)",
+      "Bash(curl -sv http://localhost:3000)",
+      "Bash(npm run *)",
+      "Bash(timeout 30 bash -c 'until curl -sf http://localhost:3000 >/dev/null 2>&1; do sleep 1; done')",
+      "Bash(curl -sD - -o /dev/null http://localhost:3000/api/invoices)",
+      "Bash(curl -sD - -o /dev/null -H \"Accept: application/json\" http://localhost:3000/api/invoices)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}
