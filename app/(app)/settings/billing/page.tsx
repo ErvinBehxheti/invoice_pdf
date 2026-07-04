@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Zap } from "lucide-react";
+import { Zap, Info } from "lucide-react";
 import { getOrCreateUser } from "@/lib/user";
 import { BillingActions } from "@/components/shared/BillingActions";
 
@@ -8,6 +8,7 @@ export default async function BillingPage() {
   if (!user) redirect("/sign-in");
 
   const isPro = user.planTier === "pro";
+  const isStripeTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_") ?? false;
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
@@ -42,6 +43,17 @@ export default async function BillingPage() {
         </p>
 
         <BillingActions isPro={isPro} />
+
+        {!isPro && isStripeTestMode && (
+          <div className="mt-4 flex gap-2 rounded-lg border border-dashed border-primary/40 bg-muted/50 p-3 text-xs text-muted-foreground">
+            <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <p>
+              This is a live demo running in Stripe test mode — no real charge is made.
+              Use test card <span className="font-mono">4242 4242 4242 4242</span>, any
+              future expiry date, and any CVC.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
