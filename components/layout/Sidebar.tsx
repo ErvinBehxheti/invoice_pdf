@@ -22,7 +22,7 @@ const navItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function Sidebar() {
+export function Sidebar({ isPro }: { isPro: boolean }) {
   const pathname = usePathname();
   const { signOut } = useClerk();
   const { user } = useUser();
@@ -56,7 +56,7 @@ export function Sidebar() {
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span>{label}</span>
-              {proOnly && (
+              {proOnly && !isPro && (
                 <Badge
                   variant="secondary"
                   className="ml-auto text-[10px] px-1.5 py-0"
@@ -69,21 +69,33 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Upgrade CTA */}
+      {/* Plan status */}
       <div className="mt-auto pt-4 space-y-3">
-        <div className="rounded-lg border border-dashed border-primary/40 bg-muted/50 p-3">
-          <p className="text-xs font-medium mb-1">Free plan</p>
-          <p className="text-xs text-muted-foreground mb-3">
-            3 invoices/month. Upgrade for unlimited.
-          </p>
-          <Link
-            href="/settings/billing"
-            className={cn(buttonVariants({ size: "sm" }), "w-full gap-1.5")}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            Upgrade to Pro
-          </Link>
-        </div>
+        {isPro ? (
+          <div className="rounded-lg border border-dashed border-primary/40 bg-muted/50 p-3">
+            <p className="text-xs font-medium flex items-center gap-1">
+              <Zap className="w-3 h-3 text-primary" />
+              Pro plan
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Unlimited invoices, all templates, and more.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-primary/40 bg-muted/50 p-3">
+            <p className="text-xs font-medium mb-1">Free plan</p>
+            <p className="text-xs text-muted-foreground mb-3">
+              3 invoices/month. Upgrade for unlimited.
+            </p>
+            <Link
+              href="/settings/billing"
+              className={cn(buttonVariants({ size: "sm" }), "w-full gap-1.5")}
+            >
+              <Zap className="w-3.5 h-3.5" />
+              Upgrade to Pro
+            </Link>
+          </div>
+        )}
 
         {/* User */}
         <div className="flex items-center gap-2 px-1">
