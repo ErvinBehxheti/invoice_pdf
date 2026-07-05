@@ -31,6 +31,7 @@ import { TemplateSelector } from "./TemplateSelector";
 import { InvoicePreviewPane } from "./InvoicePreviewPane";
 
 const DRAFT_KEY = "invoiceflow_draft";
+const PENDING_SAVE_KEY = "invoiceflow_pending_save";
 
 interface InvoiceBuilderProps {
   invoiceId?: string;
@@ -47,7 +48,7 @@ export function InvoiceBuilder({
 }: InvoiceBuilderProps) {
   const isEditMode = !!invoiceId;
   const router = useRouter();
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn } = useUser();
   const [detectedIsPro, setDetectedIsPro] = useState(false);
   const isPro = isProProp ?? detectedIsPro;
 
@@ -167,21 +168,21 @@ export function InvoiceBuilder({
   }
 
   // Auto-save once a signed-out user completes sign-in via the modal triggered by Save.
-  const authInitialized = useRef(false);
-  const wasSignedIn = useRef(false);
+  // Tracked through localStorage (not just component state) because OAuth sign-in
+  // (Google/Apple) navigates away to the provider and back, which fully remounts this
+  // component — a plain "was signed out, now signed in" ref never survives that reload,
+  // silently dropping the save. localStorage does survive it.
+  const pendingSaveHandled = useRef(false);
   useEffect(() => {
-    if (!isLoaded) return;
-    if (!authInitialized.current) {
-      authInitialized.current = true;
-      wasSignedIn.current = !!isSignedIn;
-      return;
-    }
-    if (!isEditMode && !wasSignedIn.current && isSignedIn) {
-      handleSave();
-    }
-    wasSignedIn.current = !!isSignedIn;
+    if (!hydrated || isEditMode || !isSignedIn) return;
+    if (pendingSaveHandled.current) return;
+    if (localStorage.getItem(PENDING_SAVE_KEY) !== "1") return;
+    pendingSaveHandled.current = true;
+    localStorage.removeItem(PENDING_SAVE_KEY);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: this effect is syncing with external state (a localStorage flag surviving a full-page OAuth redirect plus the Clerk session), not deriving local state from props
+    handleSave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSignedIn, isLoaded]);
+  }, [hydrated, isEditMode, isSignedIn]);
 
   async function handleDownload() {
     setDownloading(true);
@@ -451,7 +452,10 @@ export function InvoiceBuilder({
             </Button>
           ) : (
             <SignInButton mode="modal">
-              <Button variant="outline">
+              <Button
+                variant="outline"
+                onClick={() => localStorage.setItem(PENDING_SAVE_KEY, "1")}
+              >
                 <Save className="w-4 h-4 mr-1.5" />
                 Save invoice
               </Button>
